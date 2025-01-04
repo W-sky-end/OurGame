@@ -24,8 +24,8 @@ public class Battle {
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1 -> {
-                    int playerDamage = random.nextInt(10) + 5;  // Урон игрока
-                    int enemyDamage = random.nextInt(10) + 3;  // Урон врага
+                    int playerDamage = random.nextInt(10) + 5;
+                    int enemyDamage = random.nextInt(10) + 3;  
                     enemyHealth -= playerDamage;
                     playerHealth -= enemyDamage;
 
