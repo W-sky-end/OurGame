@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Battle {
-    public static void main(String[] args) {
+    public void startBattle() {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
 
@@ -25,7 +25,7 @@ public class Battle {
             switch (choice) {
                 case 1 -> {
                     int playerDamage = random.nextInt(10) + 5;
-                    int enemyDamage = random.nextInt(10) + 3;  
+                    int enemyDamage = random.nextInt(10) + 3;
                     enemyHealth -= playerDamage;
                     playerHealth -= enemyDamage;
 
