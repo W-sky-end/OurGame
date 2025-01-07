@@ -1,52 +1,66 @@
 package main.battle;
 
+import main.Messages;
+import main.game.GameMenu;
+
 import java.util.Random;
 import java.util.Scanner;
 
 public class Battle {
-    public void startBattle() {
-        Scanner scanner = new Scanner(System.in);
+    private boolean battleRunning = true;
+    int playerHealth = 100;
+    int enemyHealth = 50;
+
+
+    public boolean isBattleRunning() {
+
+        return battleRunning;
+    }
+
+
+    public String startBattle() {
+        return Messages.getInGameHudStart(playerHealth, enemyHealth);
+    }
+
+
+    public String processBattleInput(int choice) {
         Random random = new Random();
+        StringBuilder result = new StringBuilder();
 
-        int playerHealth = 100;
-        int enemyHealth = 50;
-        boolean running = true;
+        switch (choice) {
+            case 1 -> {
+                int playerDamage = random.nextInt(10) + 5;
+                int enemyDamage = random.nextInt(10) + 3;
 
-        System.out.println("Вы встретили врага!");
+                enemyHealth -= playerDamage;
+                playerHealth -= enemyDamage;
 
-        while (running) {
-            System.out.println("\nВаше здоровье: " + playerHealth);
-            System.out.println("Здоровье врага: " + enemyHealth);
-            System.out.println("1. Атаковать");
-            System.out.println("2. Убежать");
-            System.out.print("Ваш выбор: ");
+                result.append(Messages.getInGameBattleResult(playerDamage, enemyDamage))
+                        .append("\n")
+                        .append(Messages.getInGameHud(playerHealth, enemyHealth));
 
-            int choice = scanner.nextInt();
-            switch (choice) {
-                case 1 -> {
-                    int playerDamage = random.nextInt(10) + 5;
-                    int enemyDamage = random.nextInt(10) + 3;
-                    enemyHealth -= playerDamage;
-                    playerHealth -= enemyDamage;
-
-                    System.out.println("Вы нанесли врагу " + playerDamage + " урона.");
-                    System.out.println("Враг атаковал вас и нанёс " + enemyDamage + " урона.");
-
-                    if (enemyHealth <= 0) {
-                        System.out.println("Вы победили врага!");
-                        running = false;
-                    } else if (playerHealth <= 0) {
-                        System.out.println("Вы погибли...");
-                        running = false;
-                    }
+                if (enemyHealth <= 0) {
+                    result = new StringBuilder("Вы победили врага!");
+                    resetBattle();
+                } else if (playerHealth <= 0) {
+                    result = new StringBuilder("Вы погибли...");
+                    resetBattle();
                 }
-                case 2 -> {
-                    System.out.println("Вы сбежали от врага!");
-                    running = false;
-                }
-                default -> System.out.println("Некорректный выбор. Попробуйте снова.");
+            }
+            case 2 -> {
+                result = new StringBuilder("Вы сбежали от врага!");
+                resetBattle();
+            }
+            default -> {
+                result = new StringBuilder(Messages.getNonExistsNumber());
             }
         }
-        scanner.close();
+        return result.toString();
+    }
+
+    public void resetBattle() {
+        playerHealth = 100;
+        enemyHealth = 50;
+        battleRunning = true;
     }
 }
