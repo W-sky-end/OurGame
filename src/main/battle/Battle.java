@@ -13,12 +13,12 @@ public class Battle {
 
 
     public boolean isBattleRunning() {
-
         return battleRunning;
     }
 
 
     public String startBattle() {
+        resetBattle();
         return Messages.getInGameHudStart(playerHealth, enemyHealth);
     }
 
@@ -41,15 +41,15 @@ public class Battle {
 
                 if (enemyHealth <= 0) {
                     result = new StringBuilder("Вы победили врага!");
-                    resetBattle();
+                    battleRunning = false;
                 } else if (playerHealth <= 0) {
                     result = new StringBuilder("Вы погибли...");
-                    resetBattle();
+                    battleRunning = false;
                 }
             }
             case 2 -> {
                 result = new StringBuilder("Вы сбежали от врага!");
-                resetBattle();
+                battleRunning = false;
             }
             default -> {
                 result = new StringBuilder(Messages.getNonExistsNumber());
