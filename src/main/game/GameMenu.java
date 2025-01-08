@@ -5,12 +5,17 @@ import main.battle.Battle;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.util.Random;
+
 public class GameMenu extends TelegramLongPollingBot {
-    private final String BOT_NAME = "SCGR1959v01Bot";
+    private final String BOT_NAME = "";
     private static final String BOT_TOKEN = "";
 
     private final Battle battle = new Battle();
@@ -118,8 +123,17 @@ public class GameMenu extends TelegramLongPollingBot {
         }
     }
 
+    void sendPhoto(long chatId) throws Exception {
+        var photo = getClass().getClassLoader().getResourceAsStream("2.jpg");
+        var message = new SendPhoto();
+        message.setChatId(chatId);
+        message.setPhoto(new InputFile(photo, "photo"));
 
-    @Override
+        execute(message);
+        }
+
+
+        @Override
     public String getBotUsername() {
         return BOT_NAME;
     }

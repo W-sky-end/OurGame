@@ -2,11 +2,12 @@ package main.battle;
 
 import main.Messages;
 import main.game.GameMenu;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 
 import java.util.Random;
 import java.util.Scanner;
 
-public class Battle {
+public class Battle{
     private boolean battleRunning = true;
     int playerHealth = 100;
     int enemyHealth = 50;
