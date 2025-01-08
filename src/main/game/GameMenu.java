@@ -109,7 +109,6 @@ public class GameMenu extends TelegramLongPollingBot {
 
             sendMessage(new SendMessage(String.valueOf(chatId),  battle.processBattleInput(choice))); // заменена послядняя часть
             if (!battle.isBattleRunning()) {
-                // defeat lost ran away
                 sendMessage(new SendMessage(String.valueOf(chatId), "Бой завершён. Возвращаемся в главное меню."));
                 returnToMainMenu(chatId);
             }
