@@ -22,7 +22,7 @@ public class GameMenu extends TelegramLongPollingBot {
         MAIN_MENU,
         SETTINGS,
         IN_GAME,
-        BAGPACK,  // <_______ Сумка
+        BACKPACK,  // <_______ Сумка
         NEW
 
     }
@@ -56,7 +56,7 @@ public class GameMenu extends TelegramLongPollingBot {
             case MAIN_MENU -> handleMainMenu(input, chatId);
             case SETTINGS -> handleSettings(input, chatId);
             case IN_GAME -> handleGameInput(input, chatId);
-            case BAGPACK -> handleBagpackInput(input, chatId); // +++++
+            case BACKPACK -> handleBagpackInput(input, chatId); // +++++
         }
     }
 
