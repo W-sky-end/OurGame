@@ -30,5 +30,9 @@ public class MonstersStack {
     public boolean isEmpty() {
         return monsters.isEmpty();
     }
+    public Monster pickMonster() {
+        return monsters.get(random.nextInt(monsters.size()));
+    }
+
 }
 

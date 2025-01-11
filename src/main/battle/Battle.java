@@ -26,13 +26,16 @@ public class Battle {
         }
 
         currentMonster = monstersStack.pickMonster();
+        System.out.println("Выбран монстр: " + currentMonster.getName());
+
         player.setHealth(100);
         currentMonster.setHealth(currentMonster.getHealth());
         battleRunning = true;
         return "Битва началась! Монстр: " + currentMonster.getName();
     }
 
-    public String processBattleInput(int choice, Player player) {
+
+    public String processBattleInput(int choice) {
         StringBuilder result = new StringBuilder();
         Random random = new Random();
 
@@ -42,16 +45,16 @@ public class Battle {
                 int monsterDamage = random.nextInt(10) + 3;
 
                 currentMonster.setHealth(Math.max(0, currentMonster.getHealth() - playerDamage));
-                player.setHealth(Math.max(0, player.getHealth() - monsterDamage));
+                Player.setHealth(Math.max(0, Player.getHealth() - monsterDamage));
 
                 result.append(Messages.getInGameBattleResult(playerDamage, monsterDamage))
                         .append("\n")
-                        .append(Messages.getInGameHud(player.getHealth(), currentMonster.getHealth()));
+                        .append(Messages.getInGameHud(Player.getHealth(), currentMonster.getHealth()));
 
                 if (currentMonster.getHealth() <= 0) {
                     result = new StringBuilder("Вы победили монстра " + currentMonster.getName() + "!");
                     battleRunning = false;
-                } else if (player.getHealth() <= 0) {
+                } else if (Player.getHealth() <= 0) {
                     result = new StringBuilder("Вы погибли...");
                     battleRunning = false;
                 }

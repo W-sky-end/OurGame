@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Player {
-    private int health = 100;
+    private static int health = 100;
     private Map<String, Integer> bagpack = new HashMap<>();
 
-    public int getHealth() {
+    public static int getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public static void setHealth(int health) {
+        Player.health = health;
     }
 
     public void addItem(String itemName) {
