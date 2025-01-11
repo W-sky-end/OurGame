@@ -2,40 +2,54 @@ package main.battle;
 
 import main.Messages;
 import main.Player.Player;
+import main.monstors.Monster;
+import main.monstors.MonstersStack;
 
 import java.util.Random;
 
 public class Battle {
     private boolean battleRunning = true;
-    private int enemyHealth = 50;
+    private final MonstersStack monstersStack = new MonstersStack();
+    private Monster currentMonster;
 
     public boolean isBattleRunning() {
         return battleRunning;
     }
 
-    public String startBattle(Player player) {
-        resetBattle(player);
-        return Messages.getInGameHudStart(player.getHealth(), enemyHealth);
+    public Monster getCurrentMonster() {
+        return currentMonster;
     }
 
-    public String processBattleInput(int choice) {
-        Random random = new Random();
+    public String startBattle(Player player) {
+        if (monstersStack.isEmpty()) {
+            return "Нет доступных монстров для битвы!";
+        }
+
+        currentMonster = monstersStack.pickMonster();
+        player.setHealth(100);
+        currentMonster.setHealth(currentMonster.getHealth());
+        battleRunning = true;
+        return "Битва началась! Монстр: " + currentMonster.getName();
+    }
+
+    public String processBattleInput(int choice, Player player) {
         StringBuilder result = new StringBuilder();
+        Random random = new Random();
 
         switch (choice) {
             case 1 -> {
                 int playerDamage = random.nextInt(10) + 5;
-                int enemyDamage = random.nextInt(10) + 3;
+                int monsterDamage = random.nextInt(10) + 3;
 
-                enemyHealth -= playerDamage;
-                player.setHealth(player.getHealth() - enemyDamage); // change
+                currentMonster.setHealth(Math.max(0, currentMonster.getHealth() - playerDamage));
+                player.setHealth(Math.max(0, player.getHealth() - monsterDamage));
 
-                result.append(Messages.getInGameBattleResult(playerDamage, enemyDamage))
+                result.append(Messages.getInGameBattleResult(playerDamage, monsterDamage))
                         .append("\n")
-                        .append(Messages.getInGameHud(player.getHealth(), enemyHealth));
+                        .append(Messages.getInGameHud(player.getHealth(), currentMonster.getHealth()));
 
-                if (enemyHealth <= 0) {
-                    result = new StringBuilder("Вы победили врага!");
+                if (currentMonster.getHealth() <= 0) {
+                    result = new StringBuilder("Вы победили монстра " + currentMonster.getName() + "!");
                     battleRunning = false;
                 } else if (player.getHealth() <= 0) {
                     result = new StringBuilder("Вы погибли...");
@@ -43,27 +57,11 @@ public class Battle {
                 }
             }
             case 2 -> {
-                result = new StringBuilder("Вы сбежали от врага!");
+                result = new StringBuilder("Вы сбежали от монстра " + currentMonster.getName() + "!");
                 battleRunning = false;
             }
-            case 3 -> {
-                if (player.removeItem("Зелье здоровья")) {
-                    player.setHealth(player.getHealth() + 20);
-                    result = new StringBuilder("Вы использовали 'Зелье здоровья'. Здоровье восстановлено!");
-                } else {
-                    result = new StringBuilder("У вас нет 'Зелье здоровья'.");
-                }
-            }
-            default -> {
-                result = new StringBuilder(Messages.getNonExistsNumber());
-            }
+            default -> result = new StringBuilder(Messages.getNonExistsNumber());
         }
         return result.toString();
-    }
-
-    public void resetBattle(Player player) {
-        player.setHealth(100);
-        enemyHealth = 50;
-        battleRunning = true;
     }
 }
