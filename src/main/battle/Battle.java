@@ -6,6 +6,8 @@ import main.Player.Player;
 import main.monstors.Monster;
 import main.monstors.MonstersStack;
 
+import java.util.Random;
+import java.util.Scanner;
 
 
 public class Battle {
@@ -70,7 +72,7 @@ public class Battle {
         return result.toString();
     }
 
-}
+
     public void startBattle() {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
