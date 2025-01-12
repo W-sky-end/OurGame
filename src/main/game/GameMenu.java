@@ -2,7 +2,11 @@ package main.game;
 
 import main.battle.Battle;
 
-import java.util.Scanner;
+
+public class GameMenu extends TelegramLongPollingBot {
+    private final String BOT_NAME = "YOUR BOT NAME";
+    private static final String BOT_TOKEN = "YOUR TOKEN";
+
 
 public class GameMenu {
     public static void main(String[] args) {
