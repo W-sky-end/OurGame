@@ -22,21 +22,21 @@ public class Messages {
     }
 
     public static String getInvalidInputText(){
-        return  "Вводите только цифры!";
+       return  "Вводите только цифры!";
     }
 
     public static String getInGameHud(int playerHealth, int enemyHealth){
         return "Ваше здоровье: " + playerHealth +
-                "\n Здоровье врага: " + enemyHealth +
-                "\n1. Атаковать" +
-                "\n2. Убежать" +
-                "\nВаш выбор:";
+               "\n Здоровье врага: " + enemyHealth +
+               "\n1. Атаковать" +
+               "\n2. Убежать" +
+               "\nВаш выбор:";
     }
     public static String getInGameHudStart(int playerHealth, int enemyHealth){
         return "Вы встретили врага!\n" + getInGameHud(playerHealth, enemyHealth);
     }
     public static String getInGameBattleResult(int playerDamage, int enemyDamage){
         return "Вы нанесли врагу " + playerDamage + " урона." +
-                "\nВраг атаковал вас и нанёс " + enemyDamage + " урона.";
+               "\nВраг атаковал вас и нанёс " + enemyDamage + " урона.";
     }
 }
