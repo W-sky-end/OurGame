@@ -1,0 +1,16 @@
+General(GameMenu class changes included):
+rollback to working gameMenu class
+changed some names (like bagpack -> backpack, etc.)
+moved enum states to separate class
+changed some logics in handlers(startBattle, processBattleInput, etc.)
+changed content of some messages that are sending to the client
+
+added sendPhoto method + implemented sending photo of current monster when the battle starts
+
+Player class:
+made hp and all related methods non-static
+
+Messages class:
+
+removed prefix 'get' from method names which contained it
+

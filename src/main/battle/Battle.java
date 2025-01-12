@@ -33,11 +33,11 @@ public class Battle {
         player.setHealth(100);
         currentMonster.setHealth(currentMonster.getHealth());
         battleRunning = true;
-        return "Битва началась! Монстр: " + currentMonster.getName();
+        return "Битва началась!\nМонстр: " + currentMonster.getName() + '\n' + Messages.inGameHud(player.getHealth(), currentMonster.getHealth());
     }
 
 
-    public String processBattleInput(int choice) {
+    public String processBattleInput(int choice, Player player) {
         StringBuilder result = new StringBuilder();
         Random random = new Random();
 
@@ -47,16 +47,16 @@ public class Battle {
                 int monsterDamage = random.nextInt(10) + 3;
 
                 currentMonster.setHealth(Math.max(0, currentMonster.getHealth() - playerDamage));
-                Player.setHealth(Math.max(0, Player.getHealth() - monsterDamage));
+                player.setHealth(Math.max(0, player.getHealth() - monsterDamage));
 
-                result.append(Messages.getInGameBattleResult(playerDamage, monsterDamage))
+                result.append(Messages.inGameBattleResult(playerDamage, monsterDamage))
                         .append("\n")
-                        .append(Messages.getInGameHud(Player.getHealth(), currentMonster.getHealth()));
+                        .append(Messages.inGameHud(player.getHealth(), currentMonster.getHealth()));
 
                 if (currentMonster.getHealth() <= 0) {
                     result = new StringBuilder("Вы победили монстра " + currentMonster.getName() + "!");
                     battleRunning = false;
-                } else if (Player.getHealth() <= 0) {
+                } else if (player.getHealth() <= 0) {
                     result = new StringBuilder("Вы погибли...");
                     battleRunning = false;
                 }
@@ -65,10 +65,11 @@ public class Battle {
                 result = new StringBuilder("Вы сбежали от монстра " + currentMonster.getName() + "!");
                 battleRunning = false;
             }
-            default -> result = new StringBuilder(Messages.getNonExistsNumber());
+            default -> result = new StringBuilder(Messages.nonExistsNumber());
         }
         return result.toString();
     }
+
 }
     public void startBattle() {
         Scanner scanner = new Scanner(System.in);
