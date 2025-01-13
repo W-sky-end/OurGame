@@ -1,43 +1,32 @@
 package main.Player;
 
+import main.backpack.Backpack;
+import main.items.Item;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Player {
-    private  int health = 100;
-    private Map<String, Integer> backpack = new HashMap<>();
+    private int health = 100;
+    private final Backpack backpack = new Backpack();
 
-    public  int getHealth() {
+    public int getHealth() {
         return health;
     }
 
     public void setHealth(int health) {
-        this.health = health;
+        this.health = Math.min(health, 100);
     }
 
-    public void addItem(String itemName) {
-        backpack.put(itemName, backpack.getOrDefault(itemName, 0) + 1);
+    public void addItem(Item item) {
+        backpack.addItem(item);
+        System.out.println("Тебе выпало: " + item.getName());
+    }
+    public boolean useItem(int itemId) {
+        return backpack.useItem(itemId);
     }
 
-    public boolean removeItem(String itemName) {
-        if (backpack.containsKey(itemName) && backpack.get(itemName) > 0) {
-            backpack.put(itemName, backpack.get(itemName) - 1);
-            if (backpack.get(itemName) == 0) {
-                backpack.remove(itemName);
-
-            }
-            return true;
-        }
-        return false;
-    }
-    public String showBag() {
-        if(backpack.isEmpty()){
-            return "Сумка пуста";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : backpack.entrySet()) {
-            sb.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-        }
-        return sb.toString();
+    public String showBackpack() {
+        return backpack.showItems();
     }
 }

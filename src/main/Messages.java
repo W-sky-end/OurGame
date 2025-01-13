@@ -1,12 +1,14 @@
 package main;
 
 public class Messages {
-    public static String mainMenuText(){
-        return " === Главное меню === " +
-                " \n1. Начать игру" +
-                " \n2. Настройки" +
-              //  " \n3. Выйти" +
-                " \nВыберите действие: ";
+    public static String mainMenuText() {
+        return """
+            === Главное меню ===
+            1. Начать игру
+            2. Настройки
+            3. Инвентарь
+            Выберите действие: 
+            """;
     }
 
     public static String settingsText() {

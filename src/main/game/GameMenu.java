@@ -3,6 +3,7 @@ package main.game;
 import main.Messages;
 import main.Player.Player;
 import main.battle.Battle;
+import main.items.HealthPotion;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,8 +15,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 
 public class GameMenu extends TelegramLongPollingBot {
-    private final String BOT_NAME = "";
-    private static final String BOT_TOKEN = "";
+    private final String BOT_NAME = "MGT0304";
+    private static final String BOT_TOKEN = "7737184129:AAGIWPh9gbC5eWeDuDrt_OboyfxZecQmlUI";
 
     private final Battle battle = new Battle();
     private final Player player = new Player();
@@ -66,8 +67,16 @@ public class GameMenu extends TelegramLongPollingBot {
                 case 2 -> {
                     sendMessage(new SendMessage(String.valueOf(chatId), "Настройки пока недоступны."));
                     returnToMainMenu(chatId);
-//                    sendMessage(new SendMessage(String.valueOf(chatId), Messages.settingsText()));
-//                    currentState = States.SETTINGS;
+                }
+                case 3 -> {
+                    currentState = States.BACKPACK;
+                    sendMessage(new SendMessage(String.valueOf(chatId), player.showBackpack()));
+                    sendMessage(new SendMessage(String.valueOf(chatId), """
+                        Что вы хотите сделать?
+                        1. Добавить предмет
+                        2. Использовать предмет
+                        0. Вернуться в меню
+                        """));
                 }
                 default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
             }
@@ -96,7 +105,7 @@ public class GameMenu extends TelegramLongPollingBot {
         try {
             int choice = Integer.parseInt(input);
 
-            sendMessage(new SendMessage(String.valueOf(chatId), battle.processBattleInput(choice, player))); // заменена послядняя часть
+            sendMessage(new SendMessage(String.valueOf(chatId), battle.processBattleInput(choice, player)));
             if (!battle.isBattleRunning()) {
                 sendMessage(new SendMessage(String.valueOf(chatId), "Бой завершён. Возвращаемся в главное меню."));
                 returnToMainMenu(chatId);
@@ -106,17 +115,19 @@ public class GameMenu extends TelegramLongPollingBot {
         }
     }
 
-    private void handleBackpackInput(String input, long chatId) {    // <-----+++++++++++
+    private void handleBackpackInput(String input, long chatId) {
         switch (input) {
             case "1" -> {
-                player.addItem("Зелье хп");
-                sendMessage(new SendMessage(String.valueOf(chatId), "Дропнуло зелье в сумку"));
+                player.addItem(new HealthPotion());
+                sendMessage(new SendMessage(String.valueOf(chatId), "Вы получили Зелье здоровья!"));
             }
             case "2" -> {
-                if (player.removeItem("Зелье хп")) {
-                    sendMessage(new SendMessage(String.valueOf(chatId), "Ты использовал зелье"));
+                if (player.useItem(1)) {
+                    player.setHealth(player.getHealth() + 20);
+                    sendMessage(new SendMessage(String.valueOf(chatId),
+                            "Вы использовали Зелье здоровья! Текущее здоровье: " + player.getHealth()));
                 } else {
-                    sendMessage(new SendMessage(String.valueOf(chatId), "Нет зелек, база!"));
+                    sendMessage(new SendMessage(String.valueOf(chatId), "У вас нет Зелий здоровья."));
                 }
             }
             case "0" -> returnToMainMenu(chatId);
