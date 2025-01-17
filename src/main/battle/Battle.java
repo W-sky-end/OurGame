@@ -7,7 +7,7 @@ import main.monstors.Monster;
 import main.monstors.MonstersStack;
 
 import java.util.Random;
-import java.util.Scanner;
+
 
 
 public class Battle {
@@ -28,14 +28,19 @@ public class Battle {
         if (monstersStack.isEmpty()) {
             return "Нет доступных монстров для битвы!";
         }
+        if (player.getHealth() <= 0) {
+            return "Ваш персонаж слишком слаб, чтобы продолжать сражения. Используйте зелье здоровья!";
+        }
 
         currentMonster = monstersStack.pickMonster();
         System.out.println("Выбран монстр: " + currentMonster.getName());
+        currentMonster.resetHealth();
 
         player.setHealth(100);
         currentMonster.setHealth(currentMonster.getHealth());
         battleRunning = true;
-        return "Битва началась!\nМонстр: " + currentMonster.getName() + '\n' + Messages.inGameHud(player.getHealth(), currentMonster.getHealth());
+        return "Битва началась!\nМонстр: " + currentMonster.getName() +
+                '\n' + Messages.inGameHud(player.getHealth(), currentMonster.getHealth());
     }
 
 
@@ -57,6 +62,7 @@ public class Battle {
 
                 if (currentMonster.getHealth() <= 0) {
                     result = new StringBuilder("Вы победили монстра " + currentMonster.getName() + "!");
+                    result.append("\nВаше текущее здоровье: ").append(player.getHealth());
                     battleRunning = false;
                 } else if (player.getHealth() <= 0) {
                     result = new StringBuilder("Вы погибли...");
@@ -67,56 +73,16 @@ public class Battle {
                 result = new StringBuilder("Вы сбежали от монстра " + currentMonster.getName() + "!");
                 battleRunning = false;
             }
+            case 3 -> {
+                if (player.useItem(1)) {
+                    player.setHealth(player.getHealth() + 20);
+                    result.append("Вы использовали зелье здоровья! Текущее здоровье: ").append(player.getHealth());
+                } else {
+                    result.append("У вас нет зелий здоровья.");
+                }
+            }
             default -> result = new StringBuilder(Messages.nonExistsNumber());
         }
         return result.toString();
     }
-
-
-    public void startBattle() {
-        Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
-
-        int playerHealth = 100;
-        int enemyHealth = 50;
-        boolean running = true;
-
-        System.out.println("Вы встретили врага!");
-
-        while (running) {
-            System.out.println("\nВаше здоровье: " + playerHealth);
-            System.out.println("Здоровье врага: " + enemyHealth);
-            System.out.println("1. Атаковать");
-            System.out.println("2. Убежать");
-            System.out.print("Ваш выбор: ");
-
-            int choice = scanner.nextInt();
-            switch (choice) {
-                case 1 -> {
-                    int playerDamage = random.nextInt(10) + 5;
-                    int enemyDamage = random.nextInt(10) + 3;
-                    enemyHealth -= playerDamage;
-                    playerHealth -= enemyDamage;
-
-                    System.out.println("Вы нанесли врагу " + playerDamage + " урона.");
-                    System.out.println("Враг атаковал вас и нанёс " + enemyDamage + " урона.");
-
-                    if (enemyHealth <= 0) {
-                        System.out.println("Вы победили врага!");
-                        running = false;
-                    } else if (playerHealth <= 0) {
-                        System.out.println("Вы погибли...");
-                        running = false;
-                    }
-                }
-                case 2 -> {
-                    System.out.println("Вы сбежали от врага!");
-                    running = false;
-                }
-                default -> System.out.println("Некорректный выбор. Попробуйте снова.");
-            }
-        }
-      
-    }
 }
-

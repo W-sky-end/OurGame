@@ -32,6 +32,7 @@ public class Messages {
                 "\n Здоровье врага: " + enemyHealth +
                 "\n1. Атаковать" +
                 "\n2. Убежать" +
+                "\n3. Использовать зелье здоровья" +
                 "\nВаш выбор:";
     }
     public static String inGameHudStart(int playerHealth, int enemyHealth){

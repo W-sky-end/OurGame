@@ -29,4 +29,8 @@ public class Player {
     public String showBackpack() {
         return backpack.showItems();
     }
+
+    public boolean equipSwordById(int swordId) {
+        return false;
+    }
 }

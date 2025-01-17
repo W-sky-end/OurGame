@@ -46,6 +46,7 @@ public class GameMenu extends TelegramLongPollingBot {
             case SETTINGS -> handleSettings(input, chatId);
             case IN_GAME -> handleGameInput(input, chatId);
             case BACKPACK -> handleBackpackInput(input, chatId);
+
         }
     }
 
@@ -77,6 +78,7 @@ public class GameMenu extends TelegramLongPollingBot {
                         2. Использовать предмет
                         0. Вернуться в меню
                         """));
+               
                 }
                 default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
             }
@@ -130,6 +132,7 @@ public class GameMenu extends TelegramLongPollingBot {
                     sendMessage(new SendMessage(String.valueOf(chatId), "У вас нет Зелий здоровья."));
                 }
             }
+
             case "0" -> returnToMainMenu(chatId);
             default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
         }

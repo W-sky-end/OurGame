@@ -6,4 +6,5 @@ public enum States {
     SETTINGS,
     IN_GAME,
     BACKPACK
+
 }

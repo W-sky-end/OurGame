@@ -16,6 +16,7 @@ public class MonstersStack {
     public void registerMonsters() {
         monsters.add(new Monster("Imp", 35, 5, "images/bes.jpg"));
         monsters.add(new Monster("Height Imp", 55, 7, "images/heightBes.jpg"));
+        monsters.add(new Monster("Red Boss", 100, 15, "images/Red Boss.jpg"));
     }
 
     public void addMonster(Monster monster) {
@@ -30,9 +31,10 @@ public class MonstersStack {
     public boolean isEmpty() {
         return monsters.isEmpty();
     }
-    public Monster pickMonster() {
-        return monsters.get(random.nextInt(monsters.size()));
-    }
 
+    public Monster pickMonster() {
+        int totalWeight = monsters.size();
+        return monsters.get(random.nextInt(totalWeight));
+    }
 }
 
