@@ -46,6 +46,7 @@ public class GameMenu extends TelegramLongPollingBot {
             case SETTINGS -> handleSettings(input, chatId);
             case IN_GAME -> handleGameInput(input, chatId);
             case BACKPACK -> handleBackpackInput(input, chatId);
+            case CHARACTER_INFO -> handleCharacterInfo(input, chatId);
 
         }
     }
@@ -78,7 +79,15 @@ public class GameMenu extends TelegramLongPollingBot {
                         2. Использовать предмет
                         0. Вернуться в меню
                         """));
-               
+                }
+                case 4 -> {
+                    currentState = States.CHARACTER_INFO;
+                    sendMessage(new SendMessage(String.valueOf(chatId), player.getCharacterInfo()));
+                    sendMessage(new SendMessage(String.valueOf(chatId), """
+                        Что вы хотите сделать?
+                        1. Вернуться в меню
+                        2. Начать бой
+                        """));
                 }
                 default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
             }
@@ -137,6 +146,24 @@ public class GameMenu extends TelegramLongPollingBot {
             default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
         }
     }
+    private void handleCharacterInfo(String input, long chatId) {
+        try {
+            int choice = Integer.parseInt(input);
+            switch (choice) {
+                case 1 -> returnToMainMenu(chatId);
+                case 2 -> {
+                    currentState = States.IN_GAME;
+                    String battleMessage = battle.startBattle(player);
+                    sendPhoto(battle.getCurrentMonster().getImage(), chatId);
+                    sendMessage(new SendMessage(String.valueOf(chatId), battleMessage));
+                }
+                default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
+            }
+        } catch (NumberFormatException e) {
+            sendMessage(new SendMessage(String.valueOf(chatId), Messages.invalidInputText()));
+        }
+    }
+
 
     void sendPhoto(String photoPath, long chatId) {
 

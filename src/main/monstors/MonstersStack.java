@@ -14,19 +14,13 @@ public class MonstersStack {
 
 
     public void registerMonsters() {
-        monsters.add(new Monster("Imp", 35, 5, "images/bes.jpg"));
-        monsters.add(new Monster("Height Imp", 55, 7, "images/heightBes.jpg"));
-        monsters.add(new Monster("Red Boss", 100, 15, "images/Red Boss.jpg"));
+        monsters.add(new Monster("Imp", 35,5,
+                "images/bes.jpg",5));
+        monsters.add(new Monster("Height Imp", 55, 7,
+                "images/heightBes.jpg",7));
+        monsters.add(new Monster("Red Boss", 100, 15,
+                "images/Red Boss.jpg",100)); // уменьшить после тестов
     }
-
-    public void addMonster(Monster monster) {
-        monsters.add(monster);
-    }
-
-    public boolean removeMonster(Monster monster) {
-        return monsters.remove(monster);
-    }
-
 
     public boolean isEmpty() {
         return monsters.isEmpty();

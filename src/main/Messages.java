@@ -3,12 +3,13 @@ package main;
 public class Messages {
     public static String mainMenuText() {
         return """
-            === Главное меню ===
-            1. Начать игру
-            2. Настройки
-            3. Инвентарь
-            Выберите действие: 
-            """;
+           === Главное меню ===
+                1. Начать игру
+                2. Настройки
+                3. Инвентарь
+                4. Информация о персонаже
+                Выберите действие:
+                """;
     }
 
     public static String settingsText() {
@@ -27,7 +28,7 @@ public class Messages {
         return  "Вводите только цифры!";
     }
 
-    public static String inGameHud(int playerHealth, int enemyHealth){
+    public static String inGameHud(String playerHealth, int enemyHealth){
         return "Ваше здоровье: " + playerHealth +
                 "\n Здоровье врага: " + enemyHealth +
                 "\n1. Атаковать" +
@@ -36,7 +37,7 @@ public class Messages {
                 "\nВаш выбор:";
     }
     public static String inGameHudStart(int playerHealth, int enemyHealth){
-        return "Вы встретили врага!\n" + inGameHud(playerHealth, enemyHealth);
+        return "Вы встретили врага!\n" + inGameHud(String.valueOf(playerHealth), enemyHealth);
     }
     public static String inGameBattleResult(int playerDamage, int enemyDamage){
         return "Вы нанесли врагу " + playerDamage + " урона." +

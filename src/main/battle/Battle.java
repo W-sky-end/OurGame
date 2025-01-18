@@ -1,14 +1,11 @@
 package main.battle;
 
-
 import main.Messages;
 import main.Player.Player;
 import main.monstors.Monster;
 import main.monstors.MonstersStack;
 
 import java.util.Random;
-
-
 
 public class Battle {
 
@@ -36,13 +33,10 @@ public class Battle {
         System.out.println("Выбран монстр: " + currentMonster.getName());
         currentMonster.resetHealth();
 
-        player.setHealth(100);
-        currentMonster.setHealth(currentMonster.getHealth());
         battleRunning = true;
         return "Битва началась!\nМонстр: " + currentMonster.getName() +
-                '\n' + Messages.inGameHud(player.getHealth(), currentMonster.getHealth());
+                '\n' + Messages.inGameHud(player.getHealthStatus(), currentMonster.getHealth());
     }
-
 
     public String processBattleInput(int choice, Player player) {
         StringBuilder result = new StringBuilder();
@@ -58,15 +52,25 @@ public class Battle {
 
                 result.append(Messages.inGameBattleResult(playerDamage, monsterDamage))
                         .append("\n")
-                        .append(Messages.inGameHud(player.getHealth(), currentMonster.getHealth()));
+                        .append(Messages.inGameHud(Player.getHealthStatus(), currentMonster.getHealth()));
 
                 if (currentMonster.getHealth() <= 0) {
                     result = new StringBuilder("Вы победили монстра " + currentMonster.getName() + "!");
-                    result.append("\nВаше текущее здоровье: ").append(player.getHealth());
+                    result.append("\nВаше текущее здоровье: ").append(player.getHealthStatus());
                     battleRunning = false;
-                } else if (player.getHealth() <= 0) {
-                    result = new StringBuilder("Вы погибли...");
-                    battleRunning = false;
+
+                    int experienceGained = currentMonster.getExperienceReward();
+                    player.addExperience(experienceGained);
+                    result.append("\nВы получили ").append(experienceGained).append(" опыта!");
+
+                    if (player.hasLevelUpNotification()) {
+                        result.append("\nПоздравляем! Ваш уровень повышен до ").append(player.getLevel()).append("!");
+                        player.clearLevelUpNotification();
+
+                    } else if (player.getHealth() <= 0) {
+                        result = new StringBuilder("Вы погибли...");
+                        battleRunning = false;
+                    }
                 }
             }
             case 2 -> {
@@ -76,7 +80,7 @@ public class Battle {
             case 3 -> {
                 if (player.useItem(1)) {
                     player.setHealth(player.getHealth() + 20);
-                    result.append("Вы использовали зелье здоровья! Текущее здоровье: ").append(player.getHealth());
+                    result.append("Вы использовали зелье здоровья! Текущее здоровье: ").append(player.getHealthStatus());
                 } else {
                     result.append("У вас нет зелий здоровья.");
                 }
