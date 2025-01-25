@@ -5,5 +5,7 @@ public enum States {
     MAIN_MENU,
     SETTINGS,
     IN_GAME,
-    BACKPACK
+    BACKPACK,
+    CHARACTER_INFO
+
 }
