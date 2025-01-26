@@ -34,4 +34,12 @@ public class Backpack {
         });
         return sb.toString();
     }
+    public Map<Integer, Integer> getItems() {
+        return items;
+    }
+    public Item getItemById(Integer itemId) {
+        return itemCatalog.get(itemId);
+    }
+
+
 }

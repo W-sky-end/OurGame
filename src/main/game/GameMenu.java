@@ -4,6 +4,7 @@ import main.Messages;
 import main.Player.Player;
 import main.battle.Battle;
 import main.items.HealthPotion;
+import main.items.Weapon;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,21 +14,17 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-
 public class GameMenu extends TelegramLongPollingBot {
-    private final String BOT_NAME = "MGT0304";
-    private static final String BOT_TOKEN = "7737184129:AAGIWPh9gbC5eWeDuDrt_OboyfxZecQmlUI";
+    private final String BOT_NAME = "  ";
+    private static final String BOT_TOKEN = "  ";
 
     private final Battle battle = new Battle();
     private final Player player = new Player();
     private States currentState = States.NEW;
 
-
     public static void main(String[] args) throws TelegramApiException {
-
         var bot = new TelegramBotsApi(DefaultBotSession.class);
         bot.registerBot(new GameMenu(BOT_TOKEN));
-        ;
     }
 
     @Override
@@ -47,7 +44,8 @@ public class GameMenu extends TelegramLongPollingBot {
             case IN_GAME -> handleGameInput(input, chatId);
             case BACKPACK -> handleBackpackInput(input, chatId);
             case CHARACTER_INFO -> handleCharacterInfo(input, chatId);
-
+            case EQUIP_WEAPON -> handleEquipWeaponInput(input, chatId);
+            case AFTER_EQUIP -> handleAfterEquipInput(input, chatId);
         }
     }
 
@@ -74,20 +72,21 @@ public class GameMenu extends TelegramLongPollingBot {
                     currentState = States.BACKPACK;
                     sendMessage(new SendMessage(String.valueOf(chatId), player.showBackpack()));
                     sendMessage(new SendMessage(String.valueOf(chatId), """
-                        Что вы хотите сделать?
-                        1. Добавить предмет
-                        2. Использовать предмет
-                        0. Вернуться в меню
-                        """));
+                            Что вы хотите сделать?
+                            1. Добавить предмет
+                            2. Использовать предмет
+                            3. Экипировать оружие
+                            0. Вернуться в меню
+                            """));
                 }
                 case 4 -> {
                     currentState = States.CHARACTER_INFO;
                     sendMessage(new SendMessage(String.valueOf(chatId), player.getCharacterInfo()));
                     sendMessage(new SendMessage(String.valueOf(chatId), """
-                        Что вы хотите сделать?
-                        1. Вернуться в меню
-                        2. Начать бой
-                        """));
+                            Что вы хотите сделать?
+                            1. Вернуться в меню
+                            2. Начать бой
+                            """));
                 }
                 default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
             }
@@ -104,7 +103,6 @@ public class GameMenu extends TelegramLongPollingBot {
                     sendMessage(new SendMessage(String.valueOf(chatId), "Back to menu."));
                     returnToMainMenu(chatId);
                 }
-               // case 1 -> sendMessage(new SendMessage(String.valueOf(chatId), "Empty choice."));
                 default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
             }
         } catch (NumberFormatException e) {
@@ -115,9 +113,16 @@ public class GameMenu extends TelegramLongPollingBot {
     private void handleGameInput(String input, long chatId) {
         try {
             int choice = Integer.parseInt(input);
-
-            sendMessage(new SendMessage(String.valueOf(chatId), battle.processBattleInput(choice, player)));
+            String battleMessage = battle.processBattleInput(choice, player);
+            sendMessage(new SendMessage(String.valueOf(chatId), battleMessage));
             if (!battle.isBattleRunning()) {
+                Weapon droppedWeapon = battle.getDroppedWeapon();
+                if (droppedWeapon != null) {
+                    player.addItem(droppedWeapon);
+                    sendMessage(new SendMessage(String.valueOf(chatId),
+                            "Вы получили оружие: " + droppedWeapon.getName() +
+                                    " (" + droppedWeapon.getDescription() + ")"));
+                }
                 sendMessage(new SendMessage(String.valueOf(chatId), "Бой завершён. Возвращаемся в главное меню."));
                 returnToMainMenu(chatId);
             }
@@ -136,16 +141,31 @@ public class GameMenu extends TelegramLongPollingBot {
                 if (player.useItem(1)) {
                     player.setHealth(player.getHealth() + 20);
                     sendMessage(new SendMessage(String.valueOf(chatId),
-                            "Вы использовали Зелье здоровья! Текущее здоровье: " + player.getHealth()));
+                            "Вы использовали Зелье здоровья! Текущее здоровье: " + player.getHealthStatus()));
                 } else {
                     sendMessage(new SendMessage(String.valueOf(chatId), "У вас нет Зелий здоровья."));
                 }
             }
-
+            case "3" -> {
+                String availableWeapons = player.showAvailableWeapons();
+                if (availableWeapons.isEmpty()) {
+                    sendMessage(new SendMessage(String.valueOf(chatId), "У вас нет доступного оружия."));
+                    returnToMainMenu(chatId); // Возвращаем в меню, если оружия нет
+                } else {
+                    currentState = States.EQUIP_WEAPON;
+                    sendMessage(new SendMessage(String.valueOf(chatId), availableWeapons));
+                    sendMessage(new SendMessage(String.valueOf(chatId), "Выберите ID оружия для экипировки:"));
+                }
+            }
             case "0" -> returnToMainMenu(chatId);
             default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
         }
     }
+
+
+
+
+
     private void handleCharacterInfo(String input, long chatId) {
         try {
             int choice = Integer.parseInt(input);
@@ -164,9 +184,7 @@ public class GameMenu extends TelegramLongPollingBot {
         }
     }
 
-
     void sendPhoto(String photoPath, long chatId) {
-
         var photo = getClass().getClassLoader().getResourceAsStream(photoPath);
         var message = new SendPhoto();
         message.setChatId(chatId);
@@ -177,9 +195,7 @@ public class GameMenu extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-
     }
-
 
     private void sendMessage(SendMessage msg) {
         try {
@@ -197,5 +213,44 @@ public class GameMenu extends TelegramLongPollingBot {
     public GameMenu(String botToken) {
         super(botToken);
     }
-}
 
+    private void handleEquipWeaponInput(String input, long chatId) {
+        try {
+            int weaponId = Integer.parseInt(input);
+
+            if (player.equipWeaponById(weaponId)) {
+                sendMessage(new SendMessage(String.valueOf(chatId), """
+                    Оружие успешно экипировано!
+                    Что вы хотите сделать дальше?
+                    1. Вступить в бой
+                    2. Вернуться в меню
+                    """));
+                currentState = States.AFTER_EQUIP;
+            } else {
+                sendMessage(new SendMessage(String.valueOf(chatId), "Оружие с таким ID не найдено. Попробуйте снова."));
+            }
+        } catch (NumberFormatException e) {
+            sendMessage(new SendMessage(String.valueOf(chatId), Messages.invalidInputText()));
+        }
+    }
+    private void handleAfterEquipInput(String input, long chatId) {
+        try {
+            int choice = Integer.parseInt(input);
+            switch (choice) {
+                case 1 -> {
+                    currentState = States.IN_GAME;
+                    String battleMessage = battle.startBattle(player);
+                    sendPhoto(battle.getCurrentMonster().getImage(), chatId);
+                    sendMessage(new SendMessage(String.valueOf(chatId), battleMessage));
+                }
+                case 2 -> {
+                    returnToMainMenu(chatId);
+                }
+                default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
+            }
+        } catch (NumberFormatException e) {
+            sendMessage(new SendMessage(String.valueOf(chatId), Messages.invalidInputText()));
+        }
+    }
+
+}
