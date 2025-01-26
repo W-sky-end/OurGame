@@ -6,6 +6,8 @@ public enum States {
     SETTINGS,
     IN_GAME,
     BACKPACK,
-    CHARACTER_INFO
+    CHARACTER_INFO,
+    EQUIP_WEAPON,
+    AFTER_EQUIP
 
 }
