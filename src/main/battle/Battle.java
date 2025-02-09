@@ -2,6 +2,7 @@ package main.battle;
 
 import main.Messages;
 import main.Player.Player;
+import main.items.Weapon;
 import main.monstors.Monster;
 import main.monstors.MonstersStack;
 
@@ -12,6 +13,7 @@ public class Battle {
     private boolean battleRunning = true;
     private final MonstersStack monstersStack = new MonstersStack();
     private Monster currentMonster;
+    private Weapon droppedWeapon;
 
     public boolean isBattleRunning() {
         return battleRunning;
@@ -34,6 +36,7 @@ public class Battle {
         currentMonster.resetHealth();
 
         battleRunning = true;
+        droppedWeapon = null;
         return "Битва началась!\nМонстр: " + currentMonster.getName() +
                 '\n' + Messages.inGameHud(player.getHealthStatus(), currentMonster.getHealth());
     }
@@ -44,7 +47,7 @@ public class Battle {
 
         switch (choice) {
             case 1 -> {
-                int playerDamage = random.nextInt(10) + 5;
+                int playerDamage = random.nextInt(10) + 5 + player.getAttackBonus();
                 int monsterDamage = random.nextInt(10) + 3;
 
                 currentMonster.setHealth(Math.max(0, currentMonster.getHealth() - playerDamage));
@@ -66,11 +69,20 @@ public class Battle {
                     if (player.hasLevelUpNotification()) {
                         result.append("\nПоздравляем! Ваш уровень повышен до ").append(player.getLevel()).append("!");
                         player.clearLevelUpNotification();
-
-                    } else if (player.getHealth() <= 0) {
-                        result = new StringBuilder("Вы погибли...");
-                        battleRunning = false;
                     }
+
+                    // Дроп ~~~~~~~~~~~~~~~~~~~~~~~
+                    Weapon droppedWeapon = currentMonster.dropWeapon();
+                    if (droppedWeapon != null) {
+                        player.addItem(droppedWeapon);
+                        result.append("\nМонстр дропнул оружие: ")
+                                .append(droppedWeapon.getName())
+                                .append(" - ").append(droppedWeapon.getDescription());
+                    }
+
+                } else if (player.getHealth() <= 0) {
+                    result = new StringBuilder("Вы погибли...");
+                    battleRunning = false;
                 }
             }
             case 2 -> {
@@ -88,5 +100,9 @@ public class Battle {
             default -> result = new StringBuilder(Messages.nonExistsNumber());
         }
         return result.toString();
+    }
+
+    public Weapon getDroppedWeapon() {
+        return droppedWeapon;
     }
 }
