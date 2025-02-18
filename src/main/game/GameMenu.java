@@ -15,8 +15,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class GameMenu extends TelegramLongPollingBot {
-    private final String BOT_NAME = "  ";
-    private static final String BOT_TOKEN = "  ";
+    private final String BOT_NAME = "MGT0304";
+    private static final String BOT_TOKEN = "7737184129:AAGIWPh9gbC5eWeDuDrt_OboyfxZecQmlUI";
 
     private final Battle battle = new Battle();
     private final Player player = new Player();
