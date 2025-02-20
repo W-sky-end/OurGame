@@ -14,6 +14,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.util.List;
+
 public class GameMenu extends TelegramLongPollingBot {
     private final String BOT_NAME = "MGT0304";
     private static final String BOT_TOKEN = "7737184129:AAGIWPh9gbC5eWeDuDrt_OboyfxZecQmlUI";
@@ -71,22 +73,17 @@ public class GameMenu extends TelegramLongPollingBot {
                 case 3 -> {
                     currentState = States.BACKPACK;
                     sendMessage(new SendMessage(String.valueOf(chatId), player.showBackpack()));
-                    sendMessage(new SendMessage(String.valueOf(chatId), """
-                            Что вы хотите сделать?
-                            1. Добавить предмет
-                            2. Использовать предмет
-                            3. Экипировать оружие
-                            0. Вернуться в меню
-                            """));
+                    sendMessage(new SendMessage(String.valueOf(chatId), "\nЧто вы хотите сделать?" +
+                            "\n1. Добавить предмет" +
+                            "\n2. Использовать предмет" +
+                            "\n3. Экипировать оружие" +
+                            "\n0. Вернуться в меню"));
                 }
                 case 4 -> {
                     currentState = States.CHARACTER_INFO;
                     sendMessage(new SendMessage(String.valueOf(chatId), player.getCharacterInfo()));
-                    sendMessage(new SendMessage(String.valueOf(chatId), """
-                            Что вы хотите сделать?
-                            1. Вернуться в меню
-                            2. Начать бой
-                            """));
+                    sendMessage(new SendMessage(String.valueOf(chatId), "\nЧто вы хотите сделать?\n1. Вернуться в меню" +
+                            "\n2. Начать бой"));
                 }
                 default -> sendMessage(new SendMessage(String.valueOf(chatId), Messages.nonExistsNumber()));
             }
