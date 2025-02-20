@@ -6,6 +6,7 @@ import main.items.Weapon;
 import main.items.WeaponRegistry;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Player {
@@ -73,6 +74,14 @@ public class Player {
         while (experience >= experienceToNextLevel) {
             levelUp();
         }
+    }
+
+    public static int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public static void setMaxHealth(int maxHealth) {
+        Player.maxHealth = maxHealth;
     }
 
     private void levelUp() {
@@ -163,6 +172,7 @@ public class Player {
         }
     }
 }
+
 
 
 

@@ -91,22 +91,7 @@ public class GameMenu extends TelegramLongPollingBot {
             sendMessage(new SendMessage(String.valueOf(chatId), Messages.invalidInputText()));
         }
     }
-    private void handleEquipWeaponInput(String input, long chatId) {
-        List<Weapon> availableWeapons = player.getAvailableWeapons();
-        if (availableWeapons.isEmpty()) {
-            sendMessage(new SendMessage(String.valueOf(chatId), "У вас нет доступного оружия."));
-            returnToMainMenu(chatId);
-            return;
-        }
 
-        StringBuilder weaponList = new StringBuilder("Доступное оружие:\n");
-        for (Weapon weapon : availableWeapons) {
-            weaponList.append(weapon.getId()).append(" - ").append(weapon.getName())
-                    .append(" (+").append(weapon.getAttackBonus()).append(" к атаке)\n");
-        }
-        sendMessage(new SendMessage(String.valueOf(chatId), weaponList.toString()));
-        sendMessage(new SendMessage(String.valueOf(chatId), "Выберите ID оружия для экипировки:"));
-    }
     private void handleSettings(String input, long chatId) {
         try {
             int choice = Integer.parseInt(input);
