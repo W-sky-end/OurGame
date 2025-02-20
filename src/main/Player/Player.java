@@ -78,10 +78,11 @@ public class Player {
     private void levelUp() {
         level++;
         experience -= experienceToNextLevel;
-        maxHealth += 10;
+        maxHealth += 10 + vitality;
         health = maxHealth;
         statPoints += 3;
         System.out.println("Поздравляю нюбик у тебя lvlUP " + level + "!");
+        System.out.println("Вы получили 3 очка характеристик. Используйте меню для их распределения!");
     }
 
     private int getExperienceForNextLevel() {
@@ -130,18 +131,33 @@ public class Player {
     public void allocateStatPoint(int choice) {
         if (statPoints > 0) {
             switch (choice) {
-                case 1 -> strength++;
-                case 2 -> agility++;
-                case 3 -> vitality++;
-                case 4 -> intelligence++;
-                case 5 -> luck++;
+                case 1 -> {
+                    strength++;
+                    System.out.println("Вы увеличили Силу! (+1 к урону)");
+                }
+                case 2 -> {
+                    agility++;
+                    System.out.println("Вы увеличили Ловкость! (+1% шанс уклонения)");
+                }
+                case 3 -> {
+                    vitality++;
+                    maxHealth += 5;
+                    System.out.println("Вы увеличили Выносливость! (+5 к максимальному здоровью)");
+                }
+                case 4 -> {
+                    intelligence++;
+                    System.out.println("Вы увеличили Интеллект! (В будущем повлияет на магию)");
+                }
+                case 5 -> {
+                    luck++;
+                    System.out.println("Вы увеличили Удачу! (+1% шанс критического удара и лута)");
+                }
                 default -> {
                     System.out.println("Некорректный выбор.");
                     return;
                 }
             }
             statPoints--;
-            System.out.println("Характеристика улучшена!");
         } else {
             System.out.println("У вас нет очков характеристик!");
         }
